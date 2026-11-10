@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Office OT Tracker</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OT Tracker">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1d5fd1">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);--bg:#f5f6f8;--card:#fff;--tx:#14181f;--mut:#5c6675;--bd:#dfe3ea;--pri:#1d5fd1;--ok:#117a45;--bad:#b42318;--hol:#fff1d6;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1319;--card:#181e27;--tx:#eef1f6;--mut:#9aa6b8;--bd:#2a3340;--pri:#6ea0ff;--ok:#4cc48a;--bad:#ff8a80;--hol:#3a2f12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1319;--card:#181e27;--tx:#eef1f6;--mut:#9aa6b8;--bd:#2a3340;--pri:#6ea0ff;--ok:#4cc48a;--bad:#ff8a80;--hol:#3a2f12;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Noto Sans Bengali","Hind Siliguri",sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+main{max-width:760px;margin:0 auto;padding:14px}
+h1{font-size:20px;margin:4px 0 12px}h2{font-size:16px;margin:16px 0 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.k{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}.k small{color:var(--mut);display:block;font-size:12px}.k b{font-size:18px}
+.k.w{grid-column:1/-1}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+input,select,textarea,button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;width:100%;min-height:46px}
+button{background:var(--pri);color:#fff;border:0;font-weight:600;cursor:pointer}button.s{background:var(--card);color:var(--tx);border:1px solid var(--bd)}button.d{background:var(--bad)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.msg{padding:10px;border-radius:10px;margin:10px 0;font-size:14px}.msg.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}.msg.er{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad)}
+.note{font-size:12px;color:var(--mut)}
+.banner{background:var(--hol);border-radius:10px;padding:8px 12px;font-size:13px;margin-bottom:12px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{background:none;color:var(--mut);border:0;border-radius:0;font-size:11px;padding:10px 2px;min-height:56px}nav button.on{color:var(--pri);font-weight:700}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal div{min-height:58px;border:1px solid var(--bd);border-radius:8px;padding:3px;font-size:11px;background:var(--card);cursor:pointer}
+.cal .h{min-height:0;border:0;text-align:center;color:var(--mut);background:none;cursor:default}.cal .sun{background:var(--hol)}.cal .t{outline:2px solid var(--pri)}
+.cal i{font-style:normal;display:block;font-size:10px}.P{color:var(--ok)}.A{color:var(--bad)}.L{color:#b7791f}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}th,td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left}
+h1{font-size:22px;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.card,.k{border-radius:18px;box-shadow:0 1px 2px rgba(20,30,50,.05)}
+button{border-radius:14px}
+.hero{background:linear-gradient(135deg,#1d5fd1,#5b8cff);color:#fff;border-radius:22px;padding:18px;margin-bottom:12px}
+.hero small{opacity:.88;display:block}.hero b{font-size:28px;display:block;margin:2px 0}
+.ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.key{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(20,30,50,.05)}
+.bub{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none}.bub .ic{width:24px;height:24px}
+.key small{color:var(--mut);display:block;font-size:12px}.key b{font-size:21px}
+.more{background:var(--card);color:var(--pri);border:1px dashed var(--pri);display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0 10px}
+nav button{display:flex;flex-direction:column;align-items:center;gap:3px}nav button.on .ic{stroke-width:2.7}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.qa button{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;padding:12px 2px;background:var(--card);color:var(--tx);border:1px solid var(--bd);font-weight:500}.qa .ic{color:var(--pri)}
+h3{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:8px}h3 .ic{color:var(--pri)}
+.theme{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:20px;padding:14px 16px;margin-bottom:12px;text-align:left;font-weight:600}
+.theme .tl{display:flex;align-items:center;gap:12px}.theme .tl .ic{width:26px;height:26px;color:var(--pri)}.theme small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+.sw{width:56px;height:32px;border-radius:20px;background:var(--bd);position:relative;flex:none;transition:background .2s}.sw i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}.sw.on{background:var(--pri)}.sw.on i{left:27px}
+.chips{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:6px 0}.chip{padding:10px 0;font-size:13px;background:var(--bg);color:var(--tx);border:1px solid var(--bd);min-height:44px}.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.opt{display:block;text-align:left;background:var(--bg);color:var(--tx);border:1.5px solid var(--bd);margin-top:8px;font-weight:400}.opt b{display:block}.opt small{display:block;color:var(--mut);font-size:12px}.opt.on{border-color:var(--pri);background:color-mix(in srgb,var(--pri) 12%,var(--card))}
+.rate{margin-top:10px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--pri) 10%,transparent);font-size:14px}
+.qc{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(20,30,50,.05)}.qc small{display:block;color:var(--mut);font-size:12px}.qc b{font-size:20px}.qc button{width:auto;min-width:132px;display:flex;align-items:center;justify-content:center;gap:6px}.qc.live{border-color:#117a45;border-width:2px}.qc .ci{background:#117a45;color:#fff}.qc .co{background:#b42318;color:#fff}
+.adj{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px}.x{width:34px;min-height:34px;padding:0;background:none;color:var(--bad);border:0;font-size:20px;flex:none}.cal i{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hero.est{background:linear-gradient(135deg,#0b7a5a,#22b07d)}
+.seg{display:flex;background:var(--bd);border-radius:14px;padding:4px;margin-bottom:12px}.seg button{background:none;color:var(--mut);min-height:40px;border-radius:11px}.seg button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.lnk{display:flex;align-items:center;justify-content:center;background:#1fa855;color:#fff;border-radius:14px;min-height:46px;font-weight:600;text-decoration:none}
+.ov{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.ovh{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--bd);background:var(--card)}.ovh b{font-size:17px}.ovh button{width:auto;min-height:40px;padding:8px 12px;background:none;color:var(--pri);font-weight:600}
+.ovb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(28px + env(safe-area-inset-bottom,0px));max-width:620px;width:100%;margin:0 auto}
+.lvh{background:linear-gradient(135deg,#d9730d,#f5a524);color:#fff;border-radius:22px;padding:18px;text-align:center;margin-bottom:6px}.lvh .yr{display:flex;align-items:center;justify-content:center;gap:18px;font-weight:700;font-size:18px}.lvh .yb{width:38px;min-height:38px;padding:0;background:rgba(255,255,255,.24);color:#fff;border-radius:50%;font-size:20px}.lvh .big{display:block;font-size:56px;line-height:1.1;margin-top:6px}
+.mh{margin:18px 4px 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.li{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.db{width:46px;height:50px;border-radius:12px;background:color-mix(in srgb,#d9730d 18%,transparent);color:#d9730d;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}.db b{font-size:18px;line-height:1}.db small{font-size:11px;font-weight:600}
+.lt{flex:1;min-width:0}.lt b{display:block}.lt small{color:var(--mut);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ch{color:var(--mut);font-size:22px}
+.pv{position:fixed;inset:0;z-index:60;background:#fff;color:#000;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:env(safe-area-inset-top,0px)}
+.pvb{display:flex;gap:8px;padding:10px;position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd}.pvp{padding:14px 14px calc(30px + env(safe-area-inset-bottom,0px));max-width:760px;margin:0 auto}
+.pv th,.pv td{border-bottom:1px solid #ddd;color:#000}.pv .note{color:#555}.pv h2{color:#000}.pvs{margin-bottom:6px}.pvs td:last-child{text-align:right}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}.pchips .chip{width:auto;padding:8px 12px;min-height:40px;font-size:13px;font-weight:600}.pchips .chip small{font-weight:400;opacity:.8}
+.toast{position:fixed;left:12px;right:12px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:40;max-width:520px;margin:0 auto;background:#1f2937;color:#fff;border-radius:14px;padding:6px 8px 6px 14px;display:flex;justify-content:space-between;align-items:center}.toast button{width:auto;min-height:38px;background:none;color:#8ab4ff;font-weight:700;padding:6px 14px}
+.lk{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center}.lkc{width:100%;max-width:320px;padding:20px;text-align:center}.dots{display:flex;justify-content:center;gap:14px;margin:20px 0}.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--pri)}.dots i.f{background:var(--pri)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.pad button{min-height:60px;font-size:22px;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:20px}
+.row>*,.grid>*{min-width:0}
+input,select,textarea{min-width:0;max-width:100%;display:block}
+input[type="date"],input[type="time"],input[type="month"]{-webkit-appearance:none;appearance:none;width:100%;min-width:0;max-width:100%;min-height:46px;line-height:1.2;text-align:left;overflow:hidden}
+input[type="date"]::-webkit-date-and-time-value,input[type="time"]::-webkit-date-and-time-value,input[type="month"]::-webkit-date-and-time-value{text-align:left;min-height:1.2em;margin:0}
+.cal .sun{background:#fbd3d3;border-color:#e39a9a;color:#9b1c1c;font-weight:600}.cal .sun i{font-weight:500}
+:root[data-theme="dark"] .cal .sun{background:#4a1d22;border-color:#7d333a;color:#ffb4ad}
+@media print{body.pvon main>*:not(.pv){display:none!important}.pv{position:static!important;overflow:visible!important}nav,.np{display:none!important}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<nav id="nav"></nav>
+<div id="toast"></div>
+<div id="lock" style="display:none"></div>
+<script>
+var KEY='otv1',DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var DEF={salary:0,start:'07:00',end:'15:30',std:8.5,weekly:0,policy:'A',cur:'BDT',tz:'Asia/Dhaka',theme:'dark',themeV:2,lang:'en',late:'offset'};
+var S={set:Object.assign({},DEF),rec:{},snap:{},demo:false,adj:[],hol:[],pre:[],skip:[],lock:null},view='dash',editDate='',calYM='',repYM='',msg=null,flt='all',q='',csv='';
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);S.set=Object.assign({},DEF,p.set);if(!(p.set&&p.set.themeV))S.set.theme='dark';S.rec=p.rec||{};S.snap=p.snap||{};S.demo=!!p.demo;S.adj=p.adj||[];S.hol=p.hol||[];S.pre=Array.isArray(p.pre)?p.pre:[];S.skip=Array.isArray(p.skip)?p.skip:[];S.lock=p.lock||null;Object.keys(S.rec).forEach(function(k){if(S.rec[k]&&S.rec[k].status==='absent')S.rec[k].status='leave'})}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){msg=['er','Could not save in this browser.']}}
+function today(){return new Date().toLocaleDateString('en-CA',{timeZone:S.set.tz||'Asia/Dhaka'})}
+var TODAY=today();calYM=repYM=TODAY.slice(0,7);editDate=TODAY;
+function dow(d){return new Date(d+'T00:00:00Z').getUTCDay()}
+function mins(t){var a=t.split(':');return +a[0]*60+ +a[1]}
+function money(n){return '৳'+(Math.round(n*100)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function hrs(n){return (Math.round(n*100)/100).toFixed(2)}
+function rate(sal){return sal/30/S.set.std}
+function calc(r){
+  var z={work:0,ot:0,reg:0,sun:0,oth:0,short:0};
+  if(!r||r.status==='absent'||r.status==='leave'||!r.start||!r.end)return z;
+  var w=((mins(r.end)-mins(r.start)+1440)%1440)/60,std=S.set.std,ot;
+  var wk=r.status==='weekly'||dow(r.date)===+S.set.weekly;
+  z.work=w;
+  if(wk){z.sun=w;ot=S.set.policy==='A'?w:S.set.policy==='B'?Math.max(w-std,0):0}
+  else{ot=Math.max(w-std,0);if(r.status==='custom')z.oth=w;else z.short=Math.max(std-w,0)}
+  z.ot=ot;z.reg=w-ot;return z}
+function month(ym){
+  var list=Object.keys(S.rec).filter(function(d){return d.indexOf(ym)===0}).sort().map(function(d){return S.rec[d]});
+  var m={list:list,adj:0,short:0,pot:0,present:0,work:0,reg:0,ot:0,abs:0,leave:0,sun:0,oth:0};
+  list.forEach(function(r){var c=calc(r);
+    if(r.status==='absent')m.abs++;else if(r.status==='leave')m.leave++;else if(c.work>0||r.status==='present')m.present++;
+    m.work+=c.work;m.reg+=c.reg;m.ot+=c.ot;m.short+=c.short;m.sun+=c.sun;m.oth+=c.oth});
+  var r0=S.snap[ym]?S.snap[ym].rate:rate(S.set.salary),pl=S.set.late;
+  m.pot=pl==='offset'?Math.max(m.ot-m.short,0):m.ot;m.adj=pl==='deduct'?m.short*r0:0;
+  return m}
+function snapFor(ym){
+  if(ym===TODAY.slice(0,7)||!S.snap[ym]&&S.set.salary<=0)return {sal:S.set.salary,rate:rate(S.set.salary),live:true};
+  if(!S.snap[ym]){S.snap[ym]={sal:S.set.salary,rate:rate(S.set.salary)};save()}
+  return S.snap[ym]}
+function ymAdd(ym,n){var a=ym.split('-'),d=new Date(Date.UTC(+a[0],+a[1]-1+n,1));return d.toISOString().slice(0,7)}
+function ymName(ym){var a=ym.split('-');return new Date(Date.UTC(+a[0],+a[1]-1,1)).toLocaleString('en-US',{month:'long',year:'numeric',timeZone:'UTC'})}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function m12(t){if(!t)return '—';var h=+t.slice(0,2),s=h<12?'AM':'PM';return ((h+11)%12+1)+':'+t.slice(3)+' '+s}
+function K(l,v,w){return '<div class="k'+(w?' w':'')+'"><small>'+l+'</small><b>'+v+'</b></div>'}
+function M(){var x=msg;msg=null;return x?'<div class="msg '+x[0]+'">'+esc(x[1])+'</div>':''}
+function bn(){return S.demo?'<div class="banner">Demo data is loaded — not real records. Clear it in Settings.</div>':''}
+
+var more=false,rmore=false;
+var IC={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',att:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 14l2 2 4-4"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',rep:'<path d="M5 20V11M12 20V4M19 20v-6"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',wallet:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 13h2M3 10h18"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',coin:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6v2M12 16v2"/>',down:'<path d="M6 9l6 6 6-6"/>',up:'<path d="M6 15l6-6 6 6"/>',print:'<path d="M6 9V3h12v6M6 18H4v-7h16v7h-2"/><rect x="6" y="14" width="12" height="7"/>',plus:'<path d="M12 5v14M5 12h14"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/>',moon:'<path d="M20 14A8 8 0 1 1 10 4a6.5 6.5 0 0 0 10 10z"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',in:'<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',no:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>'};
+function ic(n){return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+IC[n]+'</svg>'}
+function key(i,l,v,c){return '<div class="key"><div class="bub" style="background:color-mix(in srgb,'+c+' 16%,transparent);color:'+c+'">'+ic(i)+'</div><div><small>'+l+'</small><b>'+v+'</b></div></div>'}
+function stat(i,l,v,c,oc){return '<div class="k"'+(oc?' role="button" tabindex="0" onclick="'+oc+'"':'')+' style="display:flex;flex-direction:column;gap:10px;padding:14px'+(oc?';cursor:pointer':'')+'"><div class="bub" style="width:40px;height:40px;background:color-mix(in srgb,'+c+' 16%,transparent);color:'+c+'">'+ic(i)+'</div><div><small>'+l+'</small><b style="font-size:24px">'+v+'</b>'+(oc?'<small style="margin-top:2px">Tap to see all leave</small>':'')+'</div></div>'}
+function nowT(){return new Date().toLocaleTimeString('en-GB',{timeZone:S.set.tz||'Asia/Dhaka',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})}
+function ed(){go('att',TODAY)}
+function openRec(){var d=today(),r=S.rec[d];if(r&&r.start&&!r.end)return r;var y=new Date(d+'T00:00:00Z');y.setUTCDate(y.getUTCDate()-1);r=S.rec[y.toISOString().slice(0,10)];return r&&r.start&&!r.end?r:null}
+function ci(){TODAY=today();if(openRec()){msg=['er','You are already checked in.'];return render()}var r=S.rec[TODAY],t=nowT();S.rec[TODAY]={date:TODAY,status:(r&&(r.status==='weekly'||r.status==='custom'))?r.status:(holName(TODAY)?'custom':'present'),start:t,end:'',notes:(r&&r.notes)||''};save();msg=['ok','Checked in at '+m12(t)+'. Have a good day!'];render()}
+function co(){TODAY=today();var r=openRec(),t=nowT();if(!r)return;if(t===r.start){msg=['er','Check-out time is the same as check-in. Wait a minute and try again.'];return render()}r.end=t;save();var c=calc(r);msg=['ok','Checked out at '+m12(t)+' · '+hrs(c.work)+' h worked, '+hrs(c.ot)+' h OT'];render()}
+function qc(){var o=openRec(),r=S.rec[TODAY],std=S.set.std;
+ if(o){var e=((mins(nowT())-mins(o.start)+1440)%1440)/60,tm=Math.round(e*60);return '<div class="qc live"><div><small>Checked in at '+m12(o.start)+(o.date!==TODAY?' ('+o.date+')':'')+'</small><b>'+Math.floor(tm/60)+'h '+(tm%60)+'m</b><small>OT so far: '+hrs(Math.max(e-std,0))+' h</small></div><button class="co" onclick="co()">'+ic('out')+' Check Out</button></div>'}
+ if(r&&(r.status==='absent'||r.status==='leave'))return '<div class="qc"><div><small>Today</small><b style="text-transform:capitalize">Marked '+r.status+'</b></div><button class="s" onclick="ed()">Edit</button></div>';
+ if(r&&r.start&&r.end){var c=calc(r);return '<div class="qc"><div><small>Today is done</small><b>'+m12(r.start)+' → '+m12(r.end)+'</b><small>'+hrs(c.work)+' h worked · '+hrs(c.ot)+' h OT</small></div><button class="s" onclick="ed()">Edit</button></div>'}
+ return '<div class="qc"><div><small>Ready to start?</small><b>Not checked in</b></div><button class="ci" onclick="ci()">'+ic('in')+' Check In</button></div>'}
+function stl(x){return x==='weekly'?'Weekly Off':x}
+function tgl(v,k){return '<button class="more np" onclick="'+k+'=!'+k+';render()">'+(v?'See less '+ic('up'):'See more '+ic('down'))+'</button>'}
+function dash(){
+  var ym=TODAY.slice(0,7),m=month(ym),sn=snapFor(ym),sal=sn.sal||S.set.salary,rt=sn.rate||rate(S.set.salary),oe=m.pot*rt,tr=S.rec[TODAY],tc=calc(tr);
+  var dim=new Date(Date.UTC(+ym.slice(0,4),+ym.slice(5),0)).getUTCDate(),dd=+TODAY.slice(8),st=tr?tr.status:'No record yet';
+  var ex='<div class="grid" style="margin:0 0 10px">'+K('Days present',m.present)+K('Working hours',hrs(m.work)+' h')+K('Hourly OT rate',money(rt))+K('Leave days',m.leave)+K('Late Arrival',hrs(m.short)+' h')+'</div>'+
+   '<div class="card"><small class="note">Month progress · day '+dd+' of '+dim+'</small><div style="height:8px;background:var(--bd);border-radius:6px;margin-top:6px"><div style="height:8px;width:'+(dd/dim*100)+'%;background:var(--pri);border-radius:6px"></div></div></div>'+
+   
+   '<p class="note">Estimated salary only — not an official payroll statement.</p>';
+  function qb(i,l,v,d){return '<button onclick="go(\''+v+'\''+(d?',TODAY':'')+')">'+ic(i)+l+'</button>'}
+  return bn()+M()+'<div class="hero"><small>'+DAYS[dow(TODAY)]+' · '+TODAY+'</small><b>'+ymName(ym)+'</b><small>Today: <span style="text-transform:capitalize">'+esc(st)+'</span> · '+hrs(tc.work)+' h worked · '+hrs(tc.ot)+' h OT</small></div>'+
+   qc()+incWarn()+(S.set.salary>0?'':'<div class="msg er">Set your monthly base salary in Settings to see earnings.</div>')+
+   key('wallet','Base salary',money(sal),'#1d5fd1')+key('clock','OT hours',hrs(m.pot)+' h','#117a45')+key('coin','OT earnings',money(oe),'#b7791f')+
+   '<div class="hero est"><small>Estimated total salary</small><b>'+money(sal+oe-m.adj)+'</b><small>Base salary + OT earnings'+(m.adj?' − late deduction '+money(m.adj):'')+' · estimate only</small></div>'+tgl(more,'more')+(more?ex:'')+
+   '<div class="qa np">'+qb('plus','Add','att',1)+qb('cal','Calendar','cal')+qb('rep','Report','rep')+qb('set','Settings','set')+'</div>'+(m.list.length?'<h2>Daily summary</h2><div class="card tw">'+tbl(m.list.slice().reverse().slice(0,7),rt)+'</div>':'<div class="card note">No attendance recorded this month yet.</div>')}
+function tbl(list,rt,nt){
+  return '<table><tr><th>Date</th><th>Day</th><th>Status</th><th>Start</th><th>End</th><th>Work h</th><th>OT h</th><th>OT ৳</th>'+(nt?'<th>Note</th>':'')+'</tr>'+list.map(function(r){var c=calc(r);
+  return '<tr><td>'+r.date+'</td><td>'+DAYS[dow(r.date)]+'</td><td>'+stl(r.status)+(inc(r)?' ⚠ no check-out':'')+'</td><td>'+m12(r.start)+'</td><td>'+m12(r.end)+'</td><td>'+hrs(c.work)+'</td><td>'+hrs(c.ot)+'</td><td>'+(Math.round(c.ot*rt*100)/100).toFixed(2)+'</td>'+(nt?'<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis">'+esc(r.notes)+'</td>':'')+'</tr>'}).join('')+'</table>'}
+
+function att(){
+  var r=S.rec[editDate]||{date:editDate,status:holName(editDate)?'custom':'present',start:S.set.start,end:S.set.end,notes:''},ex=!!S.rec[editDate];
+  var opts=[['present','Present'],['leave','Leave'],['weekly','Weekly Holiday'],['custom','Custom Holiday']].map(function(o){return '<option value="'+o[0]+'"'+(r.status===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('');
+  var c=calc(r);
+  return bn()+'<h1>'+ic('att')+' Attendance</h1>'+M()+'<div class="card"><label>Date</label><input type="date" id="f_d" value="'+editDate+'" onchange="editDate=this.value;render()">'+
+  '<div class="note">'+DAYS[dow(editDate)]+(dow(editDate)===+S.set.weekly?' · weekly holiday':'')+(holName(editDate)?' · holiday: '+esc(holName(editDate)):'')+(ex?' · editing existing record':' · new record')+'</div>'+
+  (r.status==='weekly'&&!r.start?'<p class="note" style="margin:10px 0 0">Weekly holiday. Add start and end time only if you worked this day. It counts as OT by your weekly-holiday rule.</p>':'')+'<label>Status</label><select id="f_s">'+opts+'</select>'+quick()+'<div class="row"><div><label>Start time</label><input type="time" id="f_a" value="'+(r.start||'')+'"></div><div><label>End time</label><input type="time" id="f_b" value="'+(r.end||'')+'"></div></div>'+
+  '<label>Notes (optional)</label><textarea id="f_n" rows="2">'+esc(r.notes)+'</textarea>'+
+  (ex?'<p class="note">Saved: '+hrs(c.work)+' h worked, '+hrs(c.ot)+' h OT.</p>':'')+
+  '<div class="row" style="margin-top:12px"><button onclick="saveRec()">'+(ex?'Update':'Save')+'</button>'+(ex?'<button class="d" onclick="delRec()">Delete</button>':'')+'</div></div><p class="note">One record per date. Overnight shifts are handled; no break is deducted.</p>'+bulkCard()}
+function saveRec(){
+  var s=$('f_s').value,a=$('f_a').value,b=$('f_b').value;
+  if(!editDate){msg=['er','Choose a date.'];return render()}
+  if((s==='present')&&(!a||!b)){msg=['er','Enter both start and end time for a present day.'];return render()}
+  if((a&&!b)||(!a&&b)){msg=['er','Enter both times or leave both empty.'];return render()}
+  if(a&&b&&a===b){msg=['er','Start and end time are identical — check the times.'];return render()}
+  var up=!!S.rec[editDate];S.rec[editDate]={date:editDate,status:s,start:(s==='absent'||s==='leave')?'':a,end:(s==='absent'||s==='leave')?'':b,notes:$('f_n').value.trim()};
+  save();msg=['ok',up?'Record updated.':'Record saved.'];render()}
+function delRec(){var r=S.rec[editDate];if(!r)return;lastDel=r;delete S.rec[editDate];if(r.status==='weekly'&&!r.start&&S.skip.indexOf(editDate)<0)S.skip.push(editDate);save();clearTimeout(delT);delT=setTimeout(function(){lastDel=null;$('toast').innerHTML=''},8000);msg=['ok','Record deleted.'];render()}
+function $(i){return document.getElementById(i)}
+
+function cal(){
+  var a=calYM.split('-'),first=dow(calYM+'-01'),dim=new Date(Date.UTC(+a[0],+a[1],0)).getUTCDate(),h='';
+  DAYS.forEach(function(d){h+='<div class="h">'+d+'</div>'});
+  for(var i=0;i<first;i++)h+='<div class="h"></div>';
+  for(var d=1;d<=dim;d++){var ds=calYM+'-'+(d<10?'0':'')+d,r=S.rec[ds],c=calc(r),cl=(dow(ds)===+S.set.weekly?' sun':'')+(ds===TODAY?' t':'')+(holName(ds)?' sun':'');
+    var tag=r?(inc(r)?'<i class="A">No out</i>':r.status==='present'?'<i class="P">P</i>':r.status==='leave'?'<i class="L">Leave</i>':'<i>Hol</i>'):'';
+    h+='<div class="'+cl+'" onclick="go(\'att\',\''+ds+'\')">'+d+tag+(holName(ds)&&!r?'<i>'+esc(holName(ds))+'</i>':'')+(c.ot>0?'<i class="P">OT '+hrs(c.ot)+'</i>':'')+'</div>'}
+  return bn()+'<h1>'+ic('cal')+' Calendar</h1><div class="row np"><button class="s" onclick="calYM=ymAdd(calYM,-1);render()">‹ Prev</button><button class="s" onclick="calYM=TODAY.slice(0,7);render()">Today</button><button class="s" onclick="calYM=ymAdd(calYM,1);render()">Next ›</button></div><h2 style="text-align:center">'+ymName(calYM)+'</h2><div class="cal">'+h+'</div><p class="note">Sunday (weekly holiday) is highlighted. Tap a date to add or edit. Dates are never auto-filled.</p>'}
+
+function rep(){if(repMode==='y')return yr();
+  var m=month(repYM),sn=snapFor(repYM),oe=m.pot*sn.rate,sal=sn.sal!=null?sn.sal:S.set.salary,list=m.list.filter(function(r){return (flt==='all'||r.status===flt)&&(!q||r.date.indexOf(q)>-1||(r.notes||'').toLowerCase().indexOf(q.toLowerCase())>-1)});
+  var body=m.list.length?'':'<div class="card note">No attendance records for this month.</div>';
+  csv='Date,Day,Status,Start,End,Working Hours,OT Hours,OT Earnings\n'+list.map(function(r){var c=calc(r);return [r.date,DAYS[dow(r.date)],stl(r.status),r.start,r.end,hrs(c.work),hrs(c.ot),(c.ot*sn.rate).toFixed(2)].join(',')}).join('\n');
+  return bn()+'<h1>'+ic('rep')+' Monthly Report</h1>'+M()+seg()+'<div class="np"><input type="month" value="'+repYM+'" onchange="if(this.value){repYM=this.value;shr=0;pan=0;render()}"></div><h2>'+ymName(repYM)+'</h2>'+
+  '<div class="grid" style="margin-bottom:12px">'+stat('ok','Attendance days',m.present,'#117a45')+stat('no','Leave days',m.leave,'#b7791f','toggleLv()')+'</div>'+(lvOpen?lvModal():'')+'<div class="hero est"><small>Estimated total salary</small><b>'+money(sal+oe-m.adj)+'</b>'+(m.adj?'<small>Late deduction: −'+money(m.adj)+'</small>':'')+(m.short>0?'<small>Late Arrival: '+hrs(m.short)+' h · '+(S.set.late==='offset'?'taken off OT':S.set.late==='deduct'?'deducted from salary':'not counted')+'</small>':'')+'</div>'+
+  '<p class="note">Estimated salary only — not an official payroll statement.</p>'+body+
+  (m.list.length?'<div class="row np"><select onchange="flt=this.value;render()">'+['all','present','leave','weekly','custom'].map(function(o){return '<option'+(flt===o?' selected':'')+' value="'+o+'">'+stl(o)+'</option>'}).join('')+'</select><input placeholder="Search date or note" value="'+esc(q)+'" onchange="q=this.value.trim();render()"></div>'+
+  '<div class="card tw" style="margin-top:10px">'+(list.length?tbl(list,sn.rate,true):'<span class="note">No records match.</span>')+'</div>'+
+  '<div class="row np"><button class="s" onclick="showCsv()">Copy CSV</button><button class="s" onclick="shareRep()">Share</button><button onclick="openPv()">Print / PDF</button></div>'+csvBox()+shrBox()+(pvOn?pvHtml():''):'')}
+function showCsv(){pan=pan==='csv'?'':'csv';render();var t=$('csvt');if(t){t.select();try{navigator.clipboard.writeText(csv)}catch(e){}}}
+function csvBox(){return pan==='csv'?'<textarea id="csvt" rows="7" readonly style="margin-top:10px">'+esc(csv)+'</textarea><p class="note">Copied if allowed. Otherwise select all and copy. File download comes in the Next.js version.</p>':''}
+
+var D=null;
+function grab(){if(D&&$('s_sal')){D.salary=$('s_sal').value;D.start=$('s_st').value;D.end=$('s_en').value;D.std=$('s_std').value}}
+function pick(k,v){grab();D[k]=v;render()}
+function toggleTheme(){grab();S.set.theme=S.set.theme==='dark'?'light':'dark';D.theme=S.set.theme;save();render()}
+function upd(){var el=$('rt');if(!el)return;var a=parseFloat($('s_sal').value),h=parseFloat($('s_std').value);
+  el.innerHTML=(a>0&&h>0)?'Hourly OT rate: <b>'+money(a/30/h)+'</b> <span class="note">(salary ÷ 30 ÷ '+h+' h)</span>':'Enter your salary to see the hourly OT rate.';if(S.set.lang==='bn')tr(el)}
+function sets(){
+  if(!D)D=Object.assign({},S.set);
+  var dk=S.set.theme==='dark';
+  var chips=DAYS.map(function(d,i){return '<button class="chip'+(+D.weekly===i?' on':'')+'" onclick="pick(\'weekly\','+i+')">'+d+'</button>'}).join('');
+  var pol=[['A','All hours count as OT','Every hour worked on the weekly holiday is paid as overtime.'],['B','Normal 8.5-hour rule','Only hours beyond the standard day count as OT.'],['C','Track only','Hours are recorded but not added to payable OT.']].map(function(o){return '<button class="opt'+(D.policy===o[0]?' on':'')+'" onclick="pick(\'policy\',\''+o[0]+'\')"><b>'+o[1]+'</b><small>'+o[2]+'</small></button>'}).join('');
+  return bn()+'<h1>'+ic('set')+' Settings</h1>'+M()+
+  '<button class="theme" onclick="toggleTheme()" aria-label="Switch light or dark mode"><span class="tl">'+ic(dk?'moon':'sun')+'<span>'+(dk?'Dark mode':'Light mode')+'<small>Tap to switch</small></span></span><span class="sw'+(dk?' on':'')+'"><i></i></span></button>'+
+  '<div class="card"><h3>'+ic('globe')+' Language</h3><div class="seg" style="margin:8px 0 0"><button class="'+(S.set.lang==='en'?'on':'')+'" onclick="setLang(\'en\')">English</button><button class="'+(S.set.lang==='bn'?'on':'')+'" onclick="setLang(\'bn\')">বাংলা</button></div></div>'+
+  '<div class="card"><h3>'+ic('wallet')+' Salary</h3><label>Monthly base salary (৳)</label><input id="s_sal" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 29000" value="'+esc(D.salary||'')+'" oninput="upd()"><div class="rate" id="rt"></div></div>'+
+  '<div class="card"><h3>'+ic('clock')+' Office hours</h3><div class="row"><div><label>Start</label><input id="s_st" type="time" value="'+D.start+'"></div><div><label>End</label><input id="s_en" type="time" value="'+D.end+'"></div></div><label>Standard hours per day</label><input id="s_std" type="number" min="1" max="24" step="0.25" inputmode="decimal" value="'+D.std+'" oninput="upd()"></div>'+
+  '<div class="card"><h3>'+ic('cal')+' Weekly holiday</h3><div class="chips">'+chips+'</div><label>If you work on the weekly holiday</label>'+pol+'</div>'+
+  lateCard()+'<button class="save" onclick="saveSet()">Save changes</button>'+
+  '<p class="note">Currency: BDT (৳) · Timezone: Asia/Dhaka. Changes apply to future calculations; past months keep their saved snapshot.</p>'+
+  '<div class="card"><h3>'+ic('att')+' Backup</h3><p class="note" style="margin:6px 0 10px">Save a copy of your data, or restore it from a copy.</p><div class="row"><button class="s" onclick="bkE()">Copy backup</button><button class="s" onclick="bkI()">Restore</button></div>'+bkBox()+'</div>'+
+  '<div class="card" style="border-color:var(--bad)"><h3 style="color:var(--bad)">Danger zone</h3><p class="note" style="margin:6px 0 10px">Deletes all attendance records, salary and settings from this browser. This cannot be undone. Take a backup first.</p><input id="del_t" placeholder="Type DELETE to confirm" autocomplete="off"><button class="d" style="margin-top:8px" onclick="delAll()">Delete all my data</button></div>'+
+  '<div style="text-align:center;margin:22px 0 6px;font-size:12px;color:var(--mut);letter-spacing:.3px"><div style="width:36px;height:3px;border-radius:2px;background:var(--bd);margin:0 auto 10px"></div>Developed by <b style="color:var(--pri);font-weight:700">Shakil</b></div>'}
+function saveSet(){
+  grab();var sal=parseFloat(D.salary||'0'),std=parseFloat(D.std);
+  if(isNaN(sal)||sal<0){msg=['er','Salary must be a number, 0 or more.'];return render()}
+  if(isNaN(std)||std<=0||std>24){msg=['er','Standard hours must be between 0 and 24.'];return render()}
+  if(!D.start||!D.end){msg=['er','Office start and end time are required.'];return render()}
+  if(+D.weekly!==+S.set.weekly){Object.keys(S.rec).forEach(function(d){var r=S.rec[d];if(r.auto&&!r.start)delete S.rec[d]});S.skip=[]}
+  S.set=Object.assign(S.set,{salary:sal,start:D.start,end:D.end,std:std,weekly:+D.weekly,policy:D.policy,late:D.late});
+  save();D=null;msg=['ok','Settings saved.'];render();scrollTo(0,0)}
+var bk='',bulkOpen=false,lvOpen=false,MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function ed2(d){lvOpen=false;go('att',d)}
+var repMode='m',repY='',shr='',pan='',pvOn=false,lvY='',MONF=['January','February','March','April','May','June','July','August','September','October','November','December'],DAYF=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function toggleLv(){lvOpen=!lvOpen;if(lvOpen)lvY=repYM.slice(0,4);render()}
+function lvYear(n){lvY=String(+lvY+n);render()}
+function lvModal(){var y=lvY,l=Object.keys(S.rec).filter(function(d){return d.slice(0,4)===y&&S.rec[d].status==='leave'}).sort(),h='',cur=-1;
+ l.forEach(function(d){var mi=+d.slice(5,7)-1,n=S.rec[d].notes;
+  if(mi!==cur){cur=mi;var c=l.filter(function(x){return +x.slice(5,7)-1===mi}).length;h+='<div class="mh">'+MONF[mi]+' · '+c+(c===1?' day':' days')+'</div>'}
+  h+='<div class="li" data-d="'+d+'" onclick="ed2(this.dataset.d)"><div class="db"><b>'+(+d.slice(8))+'</b><small>'+MON[mi]+'</small></div><div class="lt"><b>'+DAYF[dow(d)]+'</b><small>'+(n?esc(n):'Tap to edit')+'</small></div><span class="ch">›</span></div>'});
+ return '<div class="ov np"><div class="ovh"><button onclick="toggleLv()">‹ Back</button><b>Leave</b><span style="width:72px"></span></div><div class="ovb"><div class="lvh"><div class="yr"><button class="yb" aria-label="Previous year" onclick="lvYear(-1)">‹</button><span>'+y+'</span><button class="yb" aria-label="Next year" onclick="lvYear(1)">›</button></div><b class="big">'+l.length+'</b><span>'+(l.length===1?'day of leave':'days of leave')+'</span></div>'+(l.length?h:'<div class="card note" style="text-align:center;margin-top:12px">No leave recorded in '+y+'.</div>')+'</div></div>'}
+function setMode(m){repMode=m;if(m==='y')repY=repYM.slice(0,4);shr='';pan='';render()}
+function seg(){return '<div class="seg np"><button class="'+(repMode==='m'?'on':'')+'" onclick="setMode(\'m\')">Monthly</button><button class="'+(repMode==='y'?'on':'')+'" onclick="setMode(\'y\')">Yearly</button></div>'}
+function yr(){
+ var y=repY||repYM.slice(0,4),rows='',T={p:0,l:0,ot:0,e:0,est:0,mo:0};
+ for(var i=1;i<=12;i++){var ym=y+'-'+(i<10?'0':'')+i,m=month(ym);if(!m.list.some(function(r){return !r.auto}))continue;
+  var rt=S.snap[ym]?S.snap[ym].rate:rate(S.set.salary),sal=S.snap[ym]?S.snap[ym].sal:S.set.salary,e=m.pot*rt;
+  T.p+=m.present;T.l+=m.leave;T.ot+=m.pot;T.e+=e;T.est+=sal+e-m.adj;T.mo++;
+  rows+='<tr><td>'+MON[i-1]+'</td><td>'+m.present+'</td><td>'+m.leave+'</td><td>'+hrs(m.pot)+'</td><td>'+(Math.round(e*100)/100).toFixed(2)+'</td></tr>'}
+ var nv='<div class="row np" style="align-items:center;margin-bottom:10px"><button class="s" style="flex:0 0 52px" onclick="repY=String(+repY-1);render()">‹</button><h2 style="text-align:center;margin:0">'+y+'</h2><button class="s" style="flex:0 0 52px" onclick="repY=String(+repY+1);render()">›</button></div>';
+ return bn()+'<h1>'+ic('rep')+' Yearly summary</h1>'+seg()+nv+
+  '<div class="hero est"><small>Total OT earnings · '+y+'</small><b>'+money(T.e)+'</b><small>'+hrs(T.ot)+' h OT · '+T.mo+(T.mo===1?' month':' months')+' recorded</small></div>'+
+  '<div class="grid" style="margin-bottom:12px">'+stat('ok','Present days',T.p,'#117a45')+stat('no','Leave days',T.l,'#b7791f')+'</div>'+
+  (T.mo?'<div class="card tw"><table><tr><th>Month</th><th>Present</th><th>Leave</th><th>OT h</th><th>OT ৳</th></tr>'+rows+'<tr><th>Total</th><th>'+T.p+'</th><th>'+T.l+'</th><th>'+hrs(T.ot)+'</th><th>'+T.e.toFixed(2)+'</th></tr></table></div><div class="k"><small>Estimated total (base + OT, months with records)</small><b>'+money(T.est)+'</b></div><p class="note">Estimate only, not an official payroll statement.</p>':'<div class="card note">No attendance records in '+y+'.</div>')}
+function repText(){var m=month(repYM),sn=snapFor(repYM),sal=sn.sal!=null?sn.sal:S.set.salary,oe=m.pot*sn.rate;
+ return 'Office OT Report · '+ymName(repYM)+'\nBase salary: '+money(sal)+'\nOT hours: '+hrs(m.pot)+' h\nOT earnings: '+money(oe)+(m.short?'\nLate Arrival: '+hrs(m.short)+' h':'')+(m.adj?'\nLate deduction: '+money(m.adj):'')+'\nEstimated total salary: '+money(sal+oe-m.adj)+'\nDays present: '+m.present+'\nLeave days: '+m.leave+'\n(Estimate only, not official payroll)'}
+function shareRep(){if(pan==='share'){pan='';render();return}
+ if(pan){pan='';render()}
+ var t=repText();if(S.set.lang==='bn')t=trs(t);
+ if(navigator.share){navigator.share({text:t}).catch(function(){shr=t;pan='share';render()})}else{shr=t;pan='share';render()}}
+function shrBox(){return (pan==='share'&&shr)?'<div class="card"><textarea id="shr_t" rows="7" readonly>'+esc(shr)+'</textarea><div class="row" style="margin-top:8px"><button class="s" onclick="copyShr()">Copy</button><a class="lnk" href="https://wa.me/?text='+encodeURIComponent(shr)+'" target="_blank" rel="noopener">WhatsApp</a></div></div>':''}
+function openPv(){pan='';pvOn=true;document.body.className='pvon';render();scrollTo(0,0)}
+function closePv(){pvOn=false;document.body.className='';render()}
+function doPrint(){try{window.print()}catch(e){}}
+function pvHtml(){var m=month(repYM),sn=snapFor(repYM),sal=sn.sal!=null?sn.sal:S.set.salary,oe=m.pot*sn.rate,r2=function(a,b){return '<tr><td>'+a+'</td><td>'+b+'</td></tr>'};
+ return '<div class="pv"><div class="pvb np"><button class="s" onclick="closePv()">‹ Back</button><button onclick="doPrint()">Print / PDF</button></div><div class="pvp"><h2 style="font-size:22px;margin:0">Office OT Report</h2><p style="margin:2px 0 12px">'+ymName(repYM)+'</p><table class="pvs">'+r2('Base salary',money(sal))+r2('Hourly OT rate',money(sn.rate))+r2('Days present',m.present)+r2('Leave days',m.leave)+r2('Working hours',hrs(m.work)+' h')+r2('OT hours',hrs(m.pot)+' h')+r2('OT earnings',money(oe))+(m.short?r2('Late Arrival',hrs(m.short)+' h'):'')+(m.adj?r2('Late deduction','−'+money(m.adj)):'')+r2('<b>Estimated total salary</b>','<b>'+money(sal+oe-m.adj)+'</b>')+'</table><h2>Daily records</h2><div class="tw">'+tbl(m.list,sn.rate,true)+'</div><p class="note">Estimate only, not an official payroll statement.</p><p class="note np">If Print does not open here, use your browser menu (Share, then Print), or copy the report text with Share.</p><div style="text-align:center;margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:12px;color:#666;letter-spacing:.3px">Developed by <b style="color:#1d5fd1">Shakil</b></div></div></div>'}
+function copyShr(){var t=$('shr_t');if(t){t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}}}
+function lateCard(){var o=[['offset','Offset against OT','Late Arrival time is taken off your total OT at month end (never below 0). Salary is not reduced.'],['deduct','Deduct from salary','Late Arrival time × hourly OT rate is subtracted from your estimated salary.'],['none','Ignore','Late Arrival is only shown. Nothing changes.']];
+ return '<div class="card"><h3>'+ic('clock')+' Late Arrival</h3><p class="note" style="margin:6px 0 0">On a normal day, if you work fewer than the standard hours, the missing time is counted as Late Arrival.</p>'+o.map(function(x){return '<button class="opt'+(D.late===x[0]?' on':'')+'" onclick="pick(\'late\',\''+x[0]+'\')"><b>'+x[1]+'</b><small>'+x[2]+'</small></button>'}).join('')+'</div>'}
+var lastDel=null,delT=0,locked=false,pinIn='',lkMsg='',hidAt=0;
+function prevRec(){var l=Object.keys(S.rec).filter(function(d){var r=S.rec[d];return d<editDate&&r.start&&r.end}).sort();return l.length?S.rec[l[l.length-1]]:null}
+function presets(){return [{name:'Office',start:S.set.start,end:S.set.end}].concat(S.pre)}
+function quick(){var cr=S.rec[editDate],pv=prevRec(),y=new Date(editDate+'T00:00:00Z');y.setUTCDate(y.getUTCDate()-1);
+ return (cr&&cr.start&&!cr.end?'<button class="s np" style="margin-top:10px" onclick="useEnd()">Use office end time · '+m12(S.set.end)+'</button>':'')+(pv?'<button class="s np" style="margin-top:8px" onclick="copyPrev()">'+(pv.date===y.toISOString().slice(0,10)?'Same as yesterday':'Same as last day')+' · '+m12(pv.start)+'–'+m12(pv.end)+'</button>':'')}
+function applyPre(i){var p=presets()[i];if(!p)return;$('f_a').value=p.start;$('f_b').value=p.end;if($('f_s').value==='leave')$('f_s').value='present'}
+function copyPrev(){var pv=prevRec();if(!pv)return;$('f_a').value=pv.start;$('f_b').value=pv.end;$('f_s').value=pv.status==='leave'?'present':pv.status}
+function undoDel(){if(!lastDel)return;var r=lastDel;lastDel=null;clearTimeout(delT);if(S.rec[r.date]){msg=['er','A record already exists for that date.'];return render()}S.rec[r.date]=r;S.skip=S.skip.filter(function(x){return x!==r.date});editDate=r.date;save();msg=['ok','Record restored.'];render()}
+function presetCard(){return '<div class="card"><h3>'+ic('clock')+' Shift presets</h3><p class="note" style="margin:6px 0 4px">Quick time buttons on the Attendance form. Your office hours are always there.</p>'+S.pre.map(function(p,i){return '<div class="adj"><span><b>'+esc(p.name)+'</b> <span class="note">'+m12(p.start)+' – '+m12(p.end)+'</span></span><button class="x" aria-label="Delete" onclick="delPre('+i+')">×</button></div>'}).join('')+'<label>Name</label><input id="p_n" maxlength="20" placeholder="e.g. Late shift"><div class="row"><div><label>Start</label><input id="p_a" type="time" value="08:00"></div><div><label>End</label><input id="p_b" type="time" value="16:30"></div></div><button style="margin-top:10px" onclick="addPre()">Add preset</button></div>'}
+function addPre(){grab();var n=$('p_n').value.trim(),a=$('p_a').value,b=$('p_b').value;if(!n||!a||!b)return flash(['er','Enter a name and both times.']);if(S.pre.length>=8)return flash(['er','You can keep up to 8 presets.']);S.pre.push({name:n,start:a,end:b});save();render()}
+function delPre(i){grab();S.pre.splice(i,1);save();render()}
+function hp(p){var s='otv1|'+p;if(typeof crypto!=='undefined'&&crypto.subtle&&typeof TextEncoder!=='undefined'){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')})}var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return Promise.resolve('d'+h)}
+function lockCard(){var f='type="password" inputmode="numeric" maxlength="4" autocomplete="off"';
+ return S.lock?'<div class="card"><h3>'+ic('lock')+' App lock · On</h3><label>Enter your PIN to turn it off</label><input id="k_o" '+f+'><button class="d" style="margin-top:10px" onclick="offPin()">Turn off lock</button></div>'
+ :'<div class="card"><h3>'+ic('lock')+' App lock</h3><p class="note" style="margin:6px 0 0">Ask for a 4-digit PIN when the app opens. This is a privacy lock for this device only.</p><label>New PIN</label><input id="k_n" '+f+'><label>Confirm PIN</label><input id="k_c" '+f+'><button style="margin-top:10px" onclick="setPin()">Turn on lock</button></div>'}
+function setPin(){grab();var a=$('k_n').value,b=$('k_c').value;if(!/^\d{4}$/.test(a))return flash(['er','PIN must be exactly 4 digits.']);if(a!==b)return flash(['er','PINs do not match.']);hp(a).then(function(h){S.lock={h:h};save();flash(['ok','App lock is on.'])})}
+function offPin(){grab();hp($('k_o').value).then(function(h){if(S.lock&&h===S.lock.h){S.lock=null;save();flash(['ok','App lock is off.'])}else flash(['er','Wrong PIN.'])})}
+function lockHtml(){return '<div class="lk"><div class="lkc"><div class="bub" style="margin:0 auto 10px;background:color-mix(in srgb,var(--pri) 16%,transparent);color:var(--pri)">'+ic('lock')+'</div><h2 style="margin:0">Enter PIN</h2><p class="note" style="margin:4px 0 0">'+(lkMsg||'Office OT Tracker is locked')+'</p><div class="dots">'+[0,1,2,3].map(function(i){return '<i class="'+(i<pinIn.length?'f':'')+'"></i>'}).join('')+'</div><div class="pad">'+[1,2,3,4,5,6,7,8,9].map(function(n){return '<button onclick="pk('+n+')">'+n+'</button>'}).join('')+'<span></span><button onclick="pk(0)">0</button><button aria-label="Delete" onclick="pdel()">⌫</button></div><button class="s" style="margin-top:18px;width:auto;min-height:36px;padding:6px 14px;font-size:13px" onclick="forgotPin()">Forgot PIN?</button></div></div>'}
+function drawLock(){var el=$('lock');if(!locked){el.innerHTML='';el.style.display='none';return}el.style.display='block';el.innerHTML=lockHtml();if(S.set.lang==='bn')tr(el)}
+function pk(d){if(pinIn.length>=4)return;pinIn+=d;lkMsg='';drawLock();if(pinIn.length===4)hp(pinIn).then(function(h){if(S.lock&&h===S.lock.h){locked=false;pinIn='';lkMsg=''}else{pinIn='';lkMsg='Wrong PIN. Try again.'}drawLock()})}
+function pdel(){pinIn=pinIn.slice(0,-1);drawLock()}
+function forgotPin(){if(confirm('Forgot PIN? This deletes ALL data stored in this browser and removes the lock. Continue?')){S.rec={};S.snap={};S.adj=[];S.hol=[];S.pre=[];S.demo=false;S.set=Object.assign({},DEF);S.lock=null;save();locked=false;pinIn='';lkMsg='';D=null;drawLock();render()}}
+function setLang(l){grab();S.set.lang=l;D.lang=l;save();render()}
+var BN={'Home':'হোম','Attendance':'হাজিরা','Calendar':'ক্যালেন্ডার','Reports':'রিপোর্ট','Report':'রিপোর্ট','Settings':'সেটিংস','Monthly Report':'মাসিক রিপোর্ট','Monthly':'মাসিক','Yearly':'বার্ষিক','Yearly summary':'বার্ষিক সারাংশ',
+'Today':'আজ','Base salary':'মূল বেতন','OT hours':'ওটি ঘণ্টা','OT earnings':'ওটি আয়','Estimated total salary':'আনুমানিক মোট বেতন','See more':'আরও দেখুন','See less':'কম দেখুন','Add':'যোগ করুন','Days present':'উপস্থিত দিন','Present days':'উপস্থিত দিন','Attendance days':'উপস্থিত দিন','Working hours':'কাজের ঘণ্টা','Hourly OT rate':'ঘণ্টা প্রতি ওটি রেট','Leave days':'ছুটির দিন','Month progress':'মাসের অগ্রগতি','day':'দিন','days':'দিন','month':'মাস','months':'মাস','recorded':'রেকর্ড','Daily summary':'দৈনিক সারাংশ','No record yet':'এখনও রেকর্ড নেই','worked':'কাজ করেছেন','OT':'ওটি','OT so far':'এ পর্যন্ত ওটি',
+'Set your monthly base salary in Settings to see earnings.':'আয় দেখতে সেটিংসে মাসিক মূল বেতন দিন।','Base salary + OT earnings':'মূল বেতন + ওটি আয়','estimate only':'শুধু আনুমানিক',
+'Ready to start?':'শুরু করতে প্রস্তুত?','Not checked in':'চেক ইন করা হয়নি','Check In':'চেক ইন','Check Out':'চেক আউট','Checked in at':'চেক ইন হয়েছে','Checked out at':'চেক আউট হয়েছে','Today is done':'আজকের কাজ শেষ','Marked':'চিহ্নিত','Edit':'এডিট','Fix':'ঠিক করুন','Have a good day!':'আপনার দিন ভালো কাটুক!','You are already checked in.':'আপনি আগেই চেক ইন করেছেন।','missing check-out. OT is not counted until fixed.':'চেক আউট বাকি। ঠিক না করা পর্যন্ত ওটি গণনা হবে না।','no check-out':'চেক আউট নেই',
+'Date':'তারিখ','Day':'বার','Status':'অবস্থা','Start':'শুরু','End':'শেষ','Work h':'কাজ ঘণ্টা','OT h':'ওটি ঘণ্টা','OT ৳':'ওটি ৳','Month':'মাস','Present':'উপস্থিত','Leave':'ছুটি','Total':'মোট','present':'উপস্থিত','leave':'ছুটি','weekly':'সাপ্তাহিক','custom':'বিশেষ','all':'সব','Weekly Holiday':'সাপ্তাহিক ছুটি','Custom Holiday':'বিশেষ ছুটি','holiday':'ছুটি',
+'Start time':'শুরুর সময়','End time':'শেষের সময়','Notes (optional)':'নোট (ঐচ্ছিক)','Save':'সেভ','Update':'আপডেট','Delete':'ডিলিট','editing existing record':'আগের রেকর্ড এডিট হচ্ছে','new record':'নতুন রেকর্ড','weekly holiday':'সাপ্তাহিক ছুটি','Saved:':'সেভ হয়েছে:','One record per date. Overnight shifts are handled; no break is deducted.':'প্রতি তারিখে একটি রেকর্ড। রাতের শিফট হিসাব হয়; কোনো বিরতি কাটা হয় না।',
+'Bulk add':'একসাথে যোগ','Fill many days at once. Weekly holidays, listed holidays and dates that already have a record are skipped.':'একসাথে অনেক দিন পূরণ করুন। সাপ্তাহিক ছুটি এবং আগে থেকে রেকর্ড থাকা দিন বাদ যাবে।','From':'থেকে','To':'পর্যন্ত','Add days':'দিন যোগ করুন','Added':'যোগ হয়েছে','skipped':'বাদ',
+'Enter both start and end time for a present day.':'উপস্থিত দিনের জন্য শুরু ও শেষ দুই সময়ই দিন।','Enter both times or leave both empty.':'দুই সময়ই দিন, অথবা দুটোই খালি রাখুন।','Record saved.':'রেকর্ড সেভ হয়েছে।','Record updated.':'রেকর্ড আপডেট হয়েছে।','Record deleted.':'রেকর্ড ডিলিট হয়েছে।','Settings saved.':'সেটিংস সেভ হয়েছে।','Choose a date.':'একটি তারিখ বাছাই করুন।',
+'Prev':'আগে','Next':'পরে','Hol':'ছুটি','No out':'আউট নেই','Sunday (weekly holiday) is highlighted. Tap a date to add or edit. Dates are never auto-filled.':'রবিবার (সাপ্তাহিক ছুটি) হাইলাইট করা। তারিখে ট্যাপ করে যোগ বা এডিট করুন। তারিখ নিজে নিজে পূরণ হয় না।',
+'Tap to see all leave':'সব ছুটি দেখতে ট্যাপ করুন','Tap to edit':'এডিট করতে ট্যাপ করুন','Back':'পিছনে','Fix manually':'নিজে ঠিক করুন','Set end to':'শেষ সময় দিন','Use office end time':'অফিসের শেষ সময় দিন','End time set on':'শেষ সময় দেওয়া হয়েছে','need a manual fix':'নিজে ঠিক করতে হবে','Weekly Off':'সাপ্তাহিক ছুটি','Weekly holiday. Add start and end time only if you worked this day. It counts as OT by your weekly-holiday rule.':'সাপ্তাহিক ছুটি। এই দিনে কাজ করলে তবেই শুরু ও শেষের সময় দিন। সাপ্তাহিক ছুটির নিয়ম অনুযায়ী ওটি হবে।','Same as yesterday':'গতকালের মতো','Same as last day':'আগের দিনের মতো','Shift presets':'শিফট প্রিসেট','Quick time buttons on the Attendance form. Your office hours are always there.':'হাজিরা ফর্মে দ্রুত সময়ের বাটন। অফিস সময় সবসময় থাকবে।','Office':'অফিস','Name':'নাম','Add preset':'প্রিসেট যোগ করুন','Undo':'আগের অবস্থায়','Record deleted':'রেকর্ড ডিলিট হয়েছে','Record restored.':'রেকর্ড ফিরে এসেছে।','App lock':'অ্যাপ লক','On':'চালু','New PIN':'নতুন পিন','Confirm PIN':'পিন নিশ্চিত করুন','Turn on lock':'লক চালু করুন','Turn off lock':'লক বন্ধ করুন','Enter PIN':'পিন দিন','Forgot PIN?':'পিন ভুলে গেছেন?','Wrong PIN. Try again.':'ভুল পিন। আবার চেষ্টা করুন।','Office OT Tracker is locked':'অফিস ওটি ট্র্যাকার লক করা','Ask for a 4-digit PIN when the app opens. This is a privacy lock for this device only.':'অ্যাপ খুললে ৪ সংখ্যার পিন চাইবে। এটি শুধু এই ডিভাইসের প্রাইভেসি লক।','Late Arrival':'দেরিতে আসা','Offset against OT':'ওটি থেকে বাদ','Deduct from salary':'বেতন থেকে কাটা','Ignore':'উপেক্ষা','Late deduction':'দেরির জন্য কাটা','taken off OT':'ওটি থেকে বাদ','deducted from salary':'বেতন থেকে কাটা','not counted':'গণনা হয়নি','Late Arrival time is taken off your total OT at month end (never below 0). Salary is not reduced.':'মাস শেষে দেরিতে আসার সময় মোট ওটি থেকে বাদ যায় (০ এর নিচে নয়)। বেতন কমে না।','Late Arrival time × hourly OT rate is subtracted from your estimated salary.':'দেরিতে আসার সময় × ঘণ্টা প্রতি ওটি রেট আনুমানিক বেতন থেকে কাটা হয়।','Late Arrival is only shown. Nothing changes.':'দেরিতে আসা শুধু দেখানো হয়, হিসাবে কিছু বদলায় না।','On a normal day, if you work fewer than the standard hours, the missing time is counted as Late Arrival.':'সাধারণ দিনে স্ট্যান্ডার্ড ঘণ্টার কম কাজ করলে ঘাটতি সময় দেরিতে আসা (Late Arrival) ধরা হয়।','If Print does not open here, use your browser menu (Share, then Print), or copy the report text with Share.':'প্রিন্ট না খুললে ব্রাউজার মেনু (শেয়ার, তারপর প্রিন্ট) ব্যবহার করুন, অথবা শেয়ার দিয়ে রিপোর্ট টেক্সট কপি করুন।','Daily records':'দৈনিক রেকর্ড','Copied if allowed. Otherwise select all and copy. File download comes in the Next.js version.':'অনুমতি থাকলে কপি হয়েছে। না হলে সব সিলেক্ট করে কপি করুন। ফাইল ডাউনলোড Next.js ভার্সনে আসবে।','day of leave':'দিন ছুটি','days of leave':'দিন ছুটি','No leave recorded in':'কোনো ছুটি রেকর্ড নেই',
+'Estimated salary only — not an official payroll statement.':'শুধু আনুমানিক বেতন — অফিসিয়াল পে-রোল নয়।','Estimate only, not an official payroll statement.':'শুধু আনুমানিক, অফিসিয়াল পে-রোল নয়।','No attendance records for this month.':'এই মাসে কোনো হাজিরা রেকর্ড নেই।','No attendance records in':'কোনো হাজিরা রেকর্ড নেই','No records match.':'কোনো রেকর্ড মেলেনি।','Copy CSV':'CSV কপি','Share':'শেয়ার','Copy':'কপি','Print / PDF':'প্রিন্ট / PDF','Search date or note':'তারিখ বা নোট খুঁজুন','Note':'নোট','Total OT earnings':'মোট ওটি আয়','Estimated total (base + OT, months with records)':'আনুমানিক মোট (মূল বেতন + ওটি, রেকর্ড থাকা মাস)','Office OT Report':'অফিস ওটি রিপোর্ট','Estimate only, not official payroll':'শুধু আনুমানিক, অফিসিয়াল পে-রোল নয়','Select all and copy. File download comes in the Next.js version.':'সব সিলেক্ট করে কপি করুন। ফাইল ডাউনলোড Next.js ভার্সনে আসবে।',
+'Light mode':'লাইট মোড','Dark mode':'ডার্ক মোড','Tap to switch':'বদলাতে ট্যাপ করুন','Language':'ভাষা','Salary':'বেতন','salary':'বেতন','Monthly base salary (৳)':'মাসিক মূল বেতন (৳)','Enter your salary to see the hourly OT rate.':'ঘণ্টা প্রতি ওটি রেট দেখতে বেতন লিখুন।','Office hours':'অফিস সময়','Standard hours per day':'দৈনিক স্ট্যান্ডার্ড ঘণ্টা','Weekly holiday':'সাপ্তাহিক ছুটি','If you work on the weekly holiday':'সাপ্তাহিক ছুটিতে কাজ করলে','All hours count as OT':'সব ঘণ্টাই ওটি','Every hour worked on the weekly holiday is paid as overtime.':'সাপ্তাহিক ছুটিতে কাজ করা প্রতি ঘণ্টা ওভারটাইম ধরা হয়।','Normal 8.5-hour rule':'সাধারণ 8.5 ঘণ্টার নিয়ম','Only hours beyond the standard day count as OT.':'স্ট্যান্ডার্ড দিনের বেশি ঘণ্টাই শুধু ওটি।','Track only':'শুধু রেকর্ড','Hours are recorded but not added to payable OT.':'ঘণ্টা রেকর্ড হয়, কিন্তু পরিশোধযোগ্য ওটিতে যোগ হয় না।','Save changes':'পরিবর্তন সেভ করুন','Currency':'মুদ্রা','Timezone':'টাইমজোন','Changes apply to future calculations; past months keep their saved snapshot.':'পরিবর্তন ভবিষ্যৎ হিসাবে প্রযোজ্য; আগের মাসের স্ন্যাপশট একই থাকে।',
+'Add to home screen':'হোম স্ক্রিনে যোগ করুন','Backup':'ব্যাকআপ','Copy backup':'ব্যাকআপ কপি','Restore':'রিস্টোর','Save a copy of your data, or restore it from a copy.':'ডেটার কপি সেভ করুন, অথবা কপি থেকে ফিরিয়ে আনুন।','Restore this backup':'এই ব্যাকআপ রিস্টোর করুন','Paste your backup here':'এখানে ব্যাকআপ পেস্ট করুন','Danger zone':'ডেঞ্জার জোন','Delete all my data':'আমার সব ডেটা ডিলিট করুন','Type DELETE to confirm':'নিশ্চিত করতে DELETE লিখুন','Type DELETE exactly to confirm.':'নিশ্চিত করতে ঠিক DELETE লিখুন।','Developed by':'ডেভেলপ করেছেন',
+'Sunday':'রবিবার','Monday':'সোমবার','Tuesday':'মঙ্গলবার','Wednesday':'বুধবার','Thursday':'বৃহস্পতিবার','Friday':'শুক্রবার','Saturday':'শনিবার','Sun':'রবি','Mon':'সোম','Tue':'মঙ্গল','Wed':'বুধ','Thu':'বৃহ','Fri':'শুক্র','Sat':'শনি',
+'January':'জানুয়ারি','February':'ফেব্রুয়ারি','March':'মার্চ','April':'এপ্রিল','May':'মে','June':'জুন','July':'জুলাই','August':'আগস্ট','September':'সেপ্টেম্বর','October':'অক্টোবর','November':'নভেম্বর','December':'ডিসেম্বর','Jan':'জানু','Feb':'ফেব্রু','Mar':'মার্চ','Apr':'এপ্রিল','Jun':'জুন','Jul':'জুলাই','Aug':'আগস্ট','Sep':'সেপ্টেম্বর','Oct':'অক্টোবর','Nov':'নভেম্বর','Dec':'ডিসেম্বর','AM':'এএম','PM':'পিএম'};
+var BNRE=null;
+function trs(t){if(!BNRE){var ks=Object.keys(BN).sort(function(a,b){return b.length-a.length}).map(function(k){return k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')});BNRE=new RegExp('(^|[^A-Za-z])('+ks.join('|')+')(?![A-Za-z])','g')}
+ t=t.replace(BNRE,function(m,p,k){return p+BN[k]});
+ t=t.replace(/(\d)(\.\d+)? h(?![A-Za-z])/g,'$1$2 ঘণ্টা');
+ return t.replace(/\d/g,function(d){return '০১২৩৪৫৬৭৮৯'.charAt(d)})}
+function tr(root){if(!root)return;var w=document.createTreeWalker(root,4,null),n,L=[];
+ while(n=w.nextNode()){var q=n.parentNode.nodeName;if(q!=='TEXTAREA'&&q!=='SCRIPT'&&q!=='STYLE')L.push(n)}
+ L.forEach(function(n){var v=trs(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v});
+ root.querySelectorAll('[placeholder]').forEach(function(e){e.setAttribute('placeholder',trs(e.getAttribute('placeholder')))})}
+function holName(d){for(var i=0;i<S.hol.length;i++)if(S.hol[i].date===d)return S.hol[i].name;return ''}
+function inc(r){return !!(r&&r.status!=='absent'&&r.status!=='leave'&&r.start&&!r.end&&r!==openRec())}
+function incList(){return Object.keys(S.rec).filter(function(d){return inc(S.rec[d])}).sort()}
+function fixInc(){var l=incList();if(l.length)go('att',l[0])}
+function incWarn(){var n=incList().length;if(!n)return '';return '<div class="msg er"><div>'+n+' day'+(n>1?'s':'')+' missing check-out. OT is not counted until fixed.</div><div class="row" style="margin-top:8px"><button class="s" style="min-height:42px" onclick="fixInc()">Fix manually</button><button style="min-height:42px" onclick="fixAllEnd()">Set end to '+m12(S.set.end)+'</button></div></div>'}
+function fixAllEnd(){var n=0,k=0;incList().forEach(function(d){var r=S.rec[d];if(mins(S.set.end)>mins(r.start)){r.end=S.set.end;n++}else k++});save();flash(['ok','End time set on '+n+' day'+(n===1?'':'s')+(k?'. '+k+' need a manual fix.':'.')])}
+function useEnd(){$('f_b').value=S.set.end}
+function flash(m){msg=m;render();scrollTo(0,0)}
+function adjCard(ym){
+ var l=S.adj.filter(function(a){return a.date.slice(0,7)===ym}).sort(function(a,b){return a.date<b.date?-1:1}),tot=0;
+ var rows=l.map(function(a){tot+=a.amount;return '<div class="adj"><span><b>'+(a.type==='advance'?'Advance':'Deduction')+'</b> <span class="note">'+a.date+(a.note?' · '+esc(a.note):'')+'</span></span><span>−'+money(a.amount)+'<button class="x np" aria-label="Delete" onclick="delAdj('+a.id+')">×</button></span></div>'}).join('');
+ return '<div class="card"><h3>'+ic('wallet')+' Advance and deductions</h3>'+(l.length?rows+'<div class="adj"><b>Total</b><b>−'+money(tot)+'</b></div>':'<p class="note" style="margin:6px 0">None this month.</p>')+'<div class="np"><div class="row"><div><label>Date</label><input id="a_d" type="date" value="'+(ym===TODAY.slice(0,7)?TODAY:ym+'-01')+'"></div><div><label>Type</label><select id="a_t"><option value="advance">Advance</option><option value="deduction">Deduction</option></select></div></div><div class="row"><div><label>Amount (৳)</label><input id="a_m" type="number" min="0" step="0.01" inputmode="decimal"></div><div><label>Note</label><input id="a_n" placeholder="optional"></div></div><button style="margin-top:10px" onclick="addAdj()">Add</button></div></div>'}
+function addAdj(){var d=$('a_d').value,a=parseFloat($('a_m').value);
+ if(!d||d.slice(0,7)!==repYM)return flash(['er','Pick a date inside '+ymName(repYM)+'.']);
+ if(isNaN(a)||a<=0)return flash(['er','Enter an amount greater than 0.']);
+ S.adj.push({id:Date.now(),date:d,type:$('a_t').value,amount:a,note:$('a_n').value.trim()});save();flash(['ok','Added.'])}
+function delAdj(id){S.adj=S.adj.filter(function(a){return a.id!==id});save();render()}
+function holSort(){S.hol.sort(function(a,b){return a.date<b.date?-1:1})}
+function holCard(){
+ return '<div class="card"><h3>'+ic('cal')+' Holidays</h3><p class="note" style="margin:6px 0 8px">Listed holidays show on the calendar, and new records on those dates start as Custom Holiday.</p>'+S.hol.map(function(h,i){return '<div class="adj"><span><b>'+esc(h.name)+'</b> <span class="note">'+h.date+'</span></span><button class="x" aria-label="Delete" onclick="delHol('+i+')">×</button></div>'}).join('')+'<div class="row"><div><label>Date</label><input id="h_d" type="date"></div><div><label>Name</label><input id="h_n" placeholder="e.g. Eid-ul-Fitr"></div></div><button style="margin-top:10px" onclick="addHol()">Add holiday</button><button class="s" style="margin-top:8px" onclick="addNat()">Add fixed national days ('+TODAY.slice(0,4)+')</button><p class="note">Fixed-date days only. Check with your official list and add Eid and other moon-based days yourself.</p></div>'}
+function addHol(){grab();var d=$('h_d').value,n=$('h_n').value.trim();
+ if(!d||!n)return flash(['er','Enter a date and a name.']);
+ if(holName(d))return flash(['er','That date already has a holiday.']);
+ S.hol.push({date:d,name:n});holSort();save();render()}
+function delHol(i){grab();S.hol.splice(i,1);save();render()}
+function addNat(){grab();var y=TODAY.slice(0,4);[['02-21','Shaheed Day'],['03-26','Independence Day'],['04-14','Pohela Boishakh'],['05-01','May Day'],['12-16','Victory Day']].forEach(function(x){var d=y+'-'+x[0];if(!holName(d))S.hol.push({date:d,name:x[1]})});holSort();save();render()}
+function instCard(){return '<div class="card"><h3>'+ic('home')+' Add to home screen</h3><p class="note" style="margin:6px 0 0"><b>iPhone:</b> open in Safari, tap Share, then Add to Home Screen.<br><b>Android:</b> Chrome menu ⋮, then Add to Home screen or Install app.<br>Offline use and a proper app icon come with the Vercel version.</p></div>'}
+function bulkCard(){
+ return '<div class="card"><button class="more" style="margin:0" onclick="bulkOpen=!bulkOpen;render()">'+ic('att')+' Bulk add '+ic(bulkOpen?'up':'down')+'</button>'+(bulkOpen?'<p class="note" style="margin:8px 0 4px">Fill many days at once. Weekly holidays, listed holidays and dates that already have a record are skipped.</p><div class="row"><div><label>From</label><input id="b_f" type="date" value="'+TODAY.slice(0,7)+'-01"></div><div><label>To</label><input id="b_t" type="date" value="'+TODAY+'"></div></div><label>Status</label><select id="b_s"><option value="present">Present</option><option value="leave">Leave</option></select><div class="row"><div><label>Start</label><input id="b_a" type="time" value="'+S.set.start+'"></div><div><label>End</label><input id="b_b" type="time" value="'+S.set.end+'"></div></div><button style="margin-top:12px" onclick="bulkAdd()">Add days</button>':'')+'</div>'}
+function bulkAdd(){var f=$('b_f').value,t=$('b_t').value,s=$('b_s').value,a=$('b_a').value,b=$('b_b').value;
+ if(!f||!t||f>t)return flash(['er','Choose a valid From and To date.']);
+ var d=new Date(f+'T00:00:00Z'),e=new Date(t+'T00:00:00Z');
+ if((e-d)/864e5>62)return flash(['er','Choose a range of 62 days or less.']);
+ if(s==='present'&&(!a||!b||a===b))return flash(['er','Enter different start and end times.']);
+ var n=0,k=0;
+ while(d<=e){var ds=d.toISOString().slice(0,10);
+  if(S.rec[ds]||dow(ds)===+S.set.weekly||holName(ds))k++;
+  else{S.rec[ds]={date:ds,status:s,start:s==='present'?a:'',end:s==='present'?b:'',notes:''};n++}
+  d.setUTCDate(d.getUTCDate()+1)}
+ save();flash(['ok','Added '+n+' day'+(n===1?'':'s')+', skipped '+k+'.'])}
+function bkE(){grab();bk='export';render();var t=$('bk_t');if(t){t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}}}
+function bkI(){grab();bk='import';render()}
+function bkBox(){
+  if(bk==='export')return '<textarea id="bk_t" rows="5" readonly style="margin-top:10px">'+esc(JSON.stringify({v:1,set:S.set,rec:S.rec,snap:S.snap,adj:S.adj,hol:S.hol,pre:S.pre,skip:S.skip}))+'</textarea><p class="note">Select all and copy this text. Keep it in Notes or send it to yourself.</p>';
+  if(bk==='import')return '<textarea id="bk_t" rows="5" placeholder="Paste your backup here" style="margin-top:10px"></textarea><button style="margin-top:8px" onclick="restoreBk()">Restore this backup</button>';
+  return ''}
+function restoreBk(){var t=$('bk_t').value.trim(),p;
+  try{p=JSON.parse(t)}catch(e){msg=['er','This is not a valid backup. Paste the full text you copied.'];return render()}
+  if(!p||typeof p.rec!=='object'||!p.rec||typeof p.set!=='object'||!p.set){msg=['er','The backup is missing data.'];return render()}
+  var ok={},n=0,T=/^([01]\d|2[0-3]):[0-5]\d$/,ST=['present','absent','leave','weekly','custom'];
+  Object.keys(p.rec).forEach(function(k){var r=p.rec[k];if(r&&/^\d{4}-\d\d-\d\d$/.test(k)&&ST.indexOf(r.status)>-1&&(!r.start||T.test(r.start))&&(!r.end||T.test(r.end))){ok[k]={date:k,status:r.status==='absent'?'leave':r.status,start:r.start||'',end:r.end||'',notes:String(r.notes||''),auto:!!r.auto};n++}});
+  if(!confirm('Replace all current data with this backup ('+n+' records)?'))return;
+  S.set=Object.assign({},DEF,p.set);S.set.salary=Math.max(0,+S.set.salary||0);if(!(S.set.std>0&&S.set.std<=24))S.set.std=8.5;
+  S.rec=ok;S.snap=(p.snap&&typeof p.snap==='object')?p.snap:{};S.adj=(Array.isArray(p.adj)?p.adj:[]).filter(function(a){return a&&/^\d{4}-\d\d-\d\d$/.test(a.date)&&(a.type==='advance'||a.type==='deduction')&&+a.amount>0}).map(function(a){return {id:+a.id||Date.now()+Math.floor(Math.random()*1e6),date:a.date,type:a.type,amount:+a.amount,note:String(a.note||'')}});S.hol=(Array.isArray(p.hol)?p.hol:[]).filter(function(h){return h&&/^\d{4}-\d\d-\d\d$/.test(h.date)}).map(function(h){return {date:h.date,name:String(h.name||'Holiday')}});holSort();S.skip=(Array.isArray(p.skip)?p.skip:[]).filter(function(x){return /^\d{4}-\d\d-\d\d$/.test(x)});S.pre=(Array.isArray(p.pre)?p.pre:[]).filter(function(x){return x&&x.name&&T.test(x.start)&&T.test(x.end)}).slice(0,8).map(function(x){return {name:String(x.name),start:x.start,end:x.end}});S.demo=false;D=null;bk='';save();msg=['ok','Backup restored: '+n+' records.'];render();scrollTo(0,0)}
+function delAll(){var t=$('del_t');if(!t||t.value.trim()!=='DELETE'){grab();msg=['er','Type DELETE exactly to confirm.'];return render()}
+  S.rec={};S.snap={};S.demo=false;S.set=Object.assign({},DEF);D=null;bk='';S.adj=[];S.hol=[];S.pre=[];S.skip=[];save();msg=['ok','All data deleted.'];render();scrollTo(0,0)}
+function demo(){
+  if(!confirm('Add demo records for this month? They are not real data.'))return;
+  var ym=TODAY.slice(0,7),n=+TODAY.slice(8),ends=['15:30','16:30','17:30','15:30'];
+  for(var d=1;d<=n;d++){var ds=ym+'-'+(d<10?'0':'')+d;if(S.rec[ds])continue;if(dow(ds)===+S.set.weekly)continue;
+    S.rec[ds]={date:ds,status:'present',start:'07:00',end:ends[d%4],notes:'demo'}}
+  if(!S.set.salary)S.set.salary=29000;S.demo=true;D=null;save();msg=['ok','Demo data added.'];render()}
+function clearAll(){if(confirm('Delete ALL records and settings in this preview?')){D=null;S.rec={};S.snap={};S.demo=false;S.set=Object.assign({},DEF);save();msg=['ok','Everything cleared.'];render()}}
+
+setInterval(function(){if(view==='dash'&&openRec())render()},30000);
+function go(v,d){shr='';pan='';pvOn=false;document.body.className='';if(v!=='set'){D=null;bk=''}view=v;if(d)editDate=d;render();scrollTo(0,0)}
+function ensureWeekly(){
+ var t=today(),ks=Object.keys(S.rec).filter(function(d){return !S.rec[d].auto}).sort(),from=ks.length?ks[0]:t.slice(0,7)+'-01',d=new Date(from+'T00:00:00Z'),e=new Date(t+'T00:00:00Z'),ch=false;
+ if((e-d)/864e5>400)d=new Date(e.getTime()-400*864e5);
+ while(d<=e){var ds=d.toISOString().slice(0,10);
+  if(dow(ds)===+S.set.weekly&&!S.rec[ds]&&S.skip.indexOf(ds)<0){S.rec[ds]={date:ds,status:'weekly',start:'',end:'',notes:'',auto:true};ch=true}
+  d.setUTCDate(d.getUTCDate()+1)}
+ if(ch)save()}
+function render0(){ensureWeekly();
+  document.documentElement.setAttribute('data-theme',S.set.theme);
+  $('app').innerHTML=({dash:dash,att:att,cal:cal,rep:rep,set:sets})[view]();
+  if(view==='set')upd();$('nav').innerHTML=[['dash','Home','home'],['att','Attendance','att'],['cal','Calendar','cal'],['rep','Reports','rep'],['set','Settings','set']].map(function(n){return '<button class="'+(view===n[0]?'on':'')+'" onclick="go(\''+n[0]+'\')">'+ic(n[2])+n[1]+'</button>'}).join('')}
+function render(){render0();$('toast').innerHTML=lastDel?'<div class="toast np"><span>Record deleted</span><button onclick="undoDel()">Undo</button></div>':'';if(S.set.lang==='bn'){tr($('app'));tr($('nav'));tr($('toast'))}}
+S.lock=null;locked=false;render();drawLock();
+document.addEventListener('visibilitychange',function(){if(document.hidden){hidAt=Date.now()}else if(S.lock&&hidAt&&Date.now()-hidAt>30000){locked=true;pinIn='';lkMsg='';drawLock()}});
+</script>
+</body>
+</html>
